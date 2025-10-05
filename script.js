@@ -1,3 +1,5 @@
+console.log("Script loaded!");
+
 // Grab elements
 const itemForm = document.getElementById("itemForm");
 const itemName = document.getElementById("itemName");
@@ -9,38 +11,39 @@ const inventoryList = document.getElementById("inventoryList");
 let inventory = [];
 
 // Handle form submission
-itemForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+itemForm.addEventListener("submit", function (e) {
+  e.preventDefault(); // Stop form from refreshing the page
 
+  // Create new item
   const item = {
     id: Date.now(),
-    name: itemName.value,
-    quantity: itemQuantity.value,
-    category: itemCategory.value || "Uncategorized"
+    name: itemName.value.trim(),
+    quantity: itemQuantity.value.trim(),
+    category: itemCategory.value.trim() || "Uncategorized",
   };
 
+  // Add item to inventory array
   inventory.push(item);
+
+  // Update the display
   displayItems();
 
+  // Reset form inputs
   itemForm.reset();
 });
 
-// Function to display items
+// Display inventory items
 function displayItems() {
-  inventoryList.innerHTML = "";
+  inventoryList.innerHTML = ""; // Clear the list first
+
+  if (inventory.length === 0) {
+    inventoryList.innerHTML = "<p>No items in inventory.</p>";
+    return;
+  }
 
   inventory.forEach((item) => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      ${item.name} - Qty: ${item.quantity} [${item.category}]
-      <button class="delete-btn" onclick="deleteItem(${item.id})">Delete</button>
-    `;
+    li.textContent = `${item.name} (${item.quantity}) - ${item.category}`;
     inventoryList.appendChild(li);
   });
-}
-
-// Function to delete item
-function deleteItem(id) {
-  inventory = inventory.filter((item) => item.id !== id);
-  displayItems();
 }
