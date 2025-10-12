@@ -56,4 +56,3 @@ tableBody.addEventListener("click", (e) => {
     }
   }
 });
-
