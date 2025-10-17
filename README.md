@@ -1,47 +1,50 @@
-Project Name
+Inventory Tracker
+Overview
 
-INVENTORY TRACKER
-
-Project Overview
-
-The Inventory Tracker is a simple web-based application that helps users manage and monitor their inventory items efficiently. Users can add, view, and delete items directly from the interface, making it easy to keep track of stock levels and item details.
+The Inventory Tracker is a web-based application designed to help users easily manage and monitor their inventory items. It allows adding, editing, deleting, and filtering items. The app also saves inventory data in the browser using local storage, so your data remains even after refreshing the page.
 
 Features
 
-Add new inventory items (name, quantity, and category).
-View all current inventory items in a list.
-Delete items once they are no longer needed.
-(Optional) Persistent storage using localStorage.
+Add Items – Users can add new items with a name, quantity, and category.
+Edit Quantities – Quantities can be modified directly from the table without reloading the page.
+Delete Items – Items can be removed from the list easily.
+Filter Items – Search items by name or category using the filter section.
+Persistent Storage – Inventory data is automatically saved using Local Storage, ensuring that all data remains intact even after closing or refreshing the page.
+Responsive Layout – Clean, user-friendly interface designed with HTML and CSS.
 
-Tech Stack
-
-HTML for structure
-CSS for styling
-JavaScript for interactivity and data handling
-Git & GitHub for version control
-
-How It Works
-
-User enters an item’s name, quantity, and category in a form.
-The app dynamically displays all items below the form.
-Each item can be deleted individually.
-(Planned) Items will be saved automatically in localStorage for persistence.
-
-Future Improvements
-
-Add edit/update functionality for inventory items.
-Add search and filter features.
-Improve styling and responsiveness for mobile devices.
-
-Repository Structure
+Project Structure
 
 Inventory-Tracker/
 │
-├── index.html
-├── styles.css
-├── script.js
-└── README.md
+├── index.html           # Homepage (optional link)
+├── dashboard.html       # Main dashboard page
+├── dashboard.css        # Styles for the dashboard page
+├── dashboard.js         # Core functionality (add, edit, delete, filter, storage)
+└── README.md            # Project documentation
+
+How It Works
+
+Open the dashboard.html file in your browser.
+Add new inventory items by filling in the form and clicking Add Item.
+Use the Edit button to adjust quantities and Delete to remove items.
+Use the filter section to quickly find items by name or category.
+All changes are automatically saved using local storage.
+
+Technologies Used
+
+HTML5 – Structure and layout
+CSS3 – Styling and design
+JavaScript (ES6) – Functionality, interactivity, and local storage
+Display user-specific inventory data
+Add sorting functionality (by name, category, or quantity)
+
+Future Enhancements 
+
+Add login and profile pages with simple authentication
+Export inventory as a CSV file
+Include dark mode for better accessibility
 
 Author
 
-Stephanie
+Stephanie Sheryl W.
+
