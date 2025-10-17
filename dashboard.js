@@ -1,7 +1,38 @@
 const form = document.getElementById("itemForm");
 const tableBody = document.querySelector("#inventoryTable tbody");
-const filterInput = document.getElementById("filterInput"); // text search (optional)
-const filterCategory = document.getElementById("filterCategory"); // dropdown filter (optional)
+
+// Filter elements
+const filterName = document.getElementById("filterName");
+const filterCategory = document.getElementById("filterCategory");
+const clearFilter = document.getElementById("clearFilter");
+
+// Load items from localStorage
+let inventory = JSON.parse(localStorage.getItem("inventoryData")) || [];
+
+// Render the inventory
+function renderInventory(items = inventory) {
+  tableBody.innerHTML = "";
+
+  items.forEach((item, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>${item.quantity}</td>
+      <td>${item.category || "—"}</td>
+      <td>
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+      </td>
+    `;
+    row.dataset.index = index;
+    tableBody.appendChild(row);
+  });
+}
+
+// Save to localStorage
+function saveInventory() {
+  localStorage.setItem("inventoryData", JSON.stringify(inventory));
+}
 
 // Add new item
 form.addEventListener("submit", (e) => {
@@ -16,67 +47,72 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td class="item-name">${name}</td>
-    <td class="item-quantity">${quantity}</td>
-    <td class="item-category">${category || "—"}</td>
-    <td>
-      <button class="edit-btn">Edit</button>
-      <button class="delete-btn">Delete</button>
-    </td>
-  `;
+  const newItem = { name, quantity, category };
+  inventory.push(newItem);
+  saveInventory();
+  renderInventory();
 
-  tableBody.appendChild(row);
   form.reset();
 });
 
-// Handle edit and delete
+// Edit or delete items
 tableBody.addEventListener("click", (e) => {
   const row = e.target.closest("tr");
+  const index = row.dataset.index;
 
   // Delete item
   if (e.target.classList.contains("delete-btn")) {
-    row.remove();
+    inventory.splice(index, 1);
+    saveInventory();
+    renderInventory();
+    return;
   }
 
   // Edit quantity
   if (e.target.classList.contains("edit-btn")) {
-    const quantityCell = row.querySelector(".item-quantity");
+    const quantityCell = row.children[1];
     const currentQuantity = quantityCell.textContent;
     const editButton = e.target;
 
     if (editButton.textContent === "Edit") {
+      // Switch to edit mode
       quantityCell.innerHTML = `<input type="number" value="${currentQuantity}" min="0" class="edit-input">`;
       editButton.textContent = "Save";
-      editButton.style.backgroundColor = "#4caf50";
+      editButton.style.backgroundColor = "#43a047";
     } else {
+      // Save changes
       const newQuantity = quantityCell.querySelector("input").value.trim();
-      quantityCell.textContent = newQuantity || currentQuantity;
-      editButton.textContent = "Edit";
-      editButton.style.backgroundColor = "#1976d2";
+      inventory[index].quantity = newQuantity || currentQuantity;
+      saveInventory();
+      renderInventory();
     }
   }
 });
 
-// Filter items (by name and category)
-function filterItems() {
-  const filterText = filterInput ? filterInput.value.toLowerCase() : "";
-  const selectedCategory = filterCategory ? filterCategory.value.toLowerCase() : "";
+// Filtering
+function filterInventory() {
+  const nameFilter = filterName.value.toLowerCase();
+  const categoryFilter = filterCategory.value.toLowerCase();
 
-  const rows = tableBody.querySelectorAll("tr");
-  rows.forEach(row => {
-    const name = row.querySelector(".item-name").textContent.toLowerCase();
-    const category = row.querySelector(".item-category").textContent.toLowerCase();
-
-    const matchesText = name.includes(filterText);
-    const matchesCategory = !selectedCategory || selectedCategory === "all" || category === selectedCategory;
-
-    row.style.display = (matchesText && matchesCategory) ? "" : "none";
+  const filteredItems = inventory.filter((item) => {
+    const nameMatch = item.name.toLowerCase().includes(nameFilter);
+    const categoryMatch = item.category.toLowerCase().includes(categoryFilter);
+    return nameMatch && categoryMatch;
   });
+
+  renderInventory(filteredItems);
 }
 
+filterName.addEventListener("input", filterInventory);
+filterCategory.addEventListener("input", filterInventory);
 
-// Listen for filter changes
-if (filterInput) filterInput.addEventListener("input", filterItems);
-if (filterCategory) filterCategory.addEventListener("change", filterItems);
+// Clear filter button
+clearFilter.addEventListener("click", () => {
+  filterName.value = "";
+  filterCategory.value = "";
+  renderInventory();
+});
+
+// Initial load
+renderInventory();
+
